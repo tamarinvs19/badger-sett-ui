@@ -185,8 +185,6 @@ a:hover { text-decoration: underline; }
   white-space: pre-wrap;
 }
 
-.video-source { font-size: 14px; }
-
 /* ---------- Responsive ---------- */
 
 @media (max-width: 480px) {

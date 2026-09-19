@@ -11,6 +11,11 @@ storage) and serves a YouTube-style catalog plus a player page.
   `video_url` (link to Yandex Cloud Video), timestamps.
 - Django admin for adding/editing videos, uploads wallpaper, shows a preview,
   and links out to Yandex Cloud Video.
+- **Add a video by link only**: paste the storage link, leave the fields
+  empty, and the name, description and wallpaper are fetched from the link
+  automatically (an "Import from link" checkbox in the admin controls it; a
+  changelist action "Fill empty fields from storage link" does the same for
+  existing rows).
 - `/` — all videos in a responsive YouTube-style grid (newest first).
 - `/video/<id>/` — full page with the embedded player (16:9).
 - Production mode via WSGI: `gunicorn` + `config.wsgi`, environment-driven
@@ -38,6 +43,26 @@ gunicorn.conf.py   Production WSGI server config
 The template embeds the player link in an `<iframe>`. If you paste a direct
 media URL instead (e.g. `.mp4`), the page renders a plain `<video>` tag, so
 both work.
+
+### Adding a video by link only
+
+On the admin "Add video" page you only need to paste the storage link and
+save — the **Import from link** checkbox (ticked by default) fetches the
+name, description and wallpaper from Yandex Cloud Video and fills the empty
+fields. This works because the public player page
+(`runtime.video.cloud.yandex.net/player/video/<id>`) is server-rendered with
+Open Graph meta tags, so no API credentials are needed (`videos/yandex.py`).
+
+Notes:
+
+- The video must be **published and publicly accessible** — otherwise Yandex
+  serves an empty page and the metadata can't be fetched.
+- Only empty fields are filled: a name or description you typed yourself is
+  never overwritten.
+- If fetching fails, the video is still saved, with its name derived from the
+  link (the video id `vplv…` or the last URL segment).
+- The wallpaper is downloaded into your own `media/wallpapers/` folder; a
+  video with no wallpaper shows a placeholder in the catalog.
 
 ## Development
 

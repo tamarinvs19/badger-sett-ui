@@ -1,11 +1,20 @@
+import re
+
 from django.db import models
 from django.urls import reverse
+
+_VIDEO_ID_RE = re.compile(r"\b(vplv[a-zA-Z0-9]{6,})\b")
 
 
 class Video(models.Model):
     """A single video shared on the site, stored in Yandex Cloud Video."""
 
-    name = models.CharField("Video name", max_length=200)
+    name = models.CharField(
+        "Video name",
+        max_length=200,
+        blank=True,
+        help_text="Can be left empty: when saving with auto-fill enabled it is fetched from the storage link.",
+    )
     description = models.TextField("Description", blank=True)
     wallpaper = models.ImageField(
         "Wallpaper / poster",
@@ -28,7 +37,18 @@ class Video(models.Model):
         verbose_name_plural = "videos"
 
     def __str__(self):
-        return self.name
+        return self.display_title
+
+    @property
+    def display_title(self):
+        """Name with a fallback derived from the storage link."""
+        if self.name.strip():
+            return self.name
+        match = _VIDEO_ID_RE.search(self.video_url or "")
+        if match:
+            return match.group(1)
+        last = (self.video_url or "").rstrip("/").split("/")[-1].split("?")[0]
+        return last or "Untitled video"
 
     def get_absolute_url(self):
         return reverse("videos:detail", kwargs={"pk": self.pk})

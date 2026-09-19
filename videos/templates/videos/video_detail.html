@@ -1,6 +1,6 @@
 {% extends "videos/base.html" %}
 
-{% block title %}{{ video.name }} · Badger Sett{% endblock %}
+{% block title %}{{ video.display_title }} · Badger Sett{% endblock %}
 
 {% block content %}
   <nav class="breadcrumb">
@@ -15,14 +15,14 @@
                src="{{ video.video_url }}"></video>
       {% else %}
         <iframe src="{{ video.video_url }}"
-                title="{{ video.name }}"
+                title="{{ video.display_title }}"
                 allow="autoplay; fullscreen; picture-in-picture"
                 allowfullscreen
                 referrerpolicy="strict-origin-when-cross-origin"></iframe>
       {% endif %}
     </div>
 
-    <h1 class="video-title">{{ video.name }}</h1>
+    <h1 class="video-title">{{ video.display_title }}</h1>
     <p class="video-meta">Published {{ video.created_at|date:"F j, Y" }}</p>
 
     {% if video.description %}

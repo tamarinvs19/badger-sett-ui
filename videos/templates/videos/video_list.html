@@ -11,13 +11,13 @@
         <a class="video-card" href="{{ video.get_absolute_url }}">
           <div class="video-thumb">
             {% if video.wallpaper %}
-              <img src="{{ video.wallpaper.url }}" alt="{{ video.name }}" loading="lazy">
+              <img src="{{ video.wallpaper.url }}" alt="{{ video.display_title }}" loading="lazy">
             {% else %}
               <span class="video-thumb-placeholder" aria-hidden="true">▶</span>
             {% endif %}
           </div>
           <div class="video-card-body">
-            <h2 class="video-card-title">{{ video.name }}</h2>
+            <h2 class="video-card-title">{{ video.display_title }}</h2>
             <p class="video-card-meta">{{ video.created_at|date:"M j, Y" }}</p>
             {% if video.description %}
               <p class="video-card-description">{{ video.description|truncatewords:24 }}</p>

@@ -1,6 +1,12 @@
+from django.http import JsonResponse
 from django.views.generic import DetailView, ListView
 
 from .models import Video
+
+
+def health(request):
+    """Liveness probe for load balancers / orchestrators."""
+    return JsonResponse({"status": "ok"})
 
 
 class VideoListView(ListView):

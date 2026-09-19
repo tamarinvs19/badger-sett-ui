@@ -18,6 +18,8 @@ storage) and serves a YouTube-style catalog plus a player page.
   existing rows).
 - `/` — all videos in a responsive YouTube-style grid (newest first).
 - `/video/<id>/` — full page with the embedded player (16:9).
+- `/health` — liveness probe, returns `{"status": "ok"}` with HTTP 200
+  (useful for load balancers, uptime checks, Kubernetes probes).
 - Production mode via WSGI: `gunicorn` + `config.wsgi`, environment-driven
   settings, WhiteNoise for static files, ready for nginx in front.
 
@@ -91,6 +93,8 @@ cp .env.example .env
 # 3. Run behind a reverse proxy
 gunicorn -c gunicorn.conf.py
 ```
+
+Point load balancer/uptime health checks at `http://host/health`.
 
 Sample nginx site:
 

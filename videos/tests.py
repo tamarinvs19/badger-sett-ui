@@ -122,6 +122,13 @@ class AdminAutoFillTests(TestCase):
         self.assertEqual(video.name, "Manual")
 
 
+class HealthTests(TestCase):
+    def test_health_endpoint(self):
+        response = self.client.get(reverse("videos:health"))
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {"status": "ok"})
+
+
 class VideoViewTests(TestCase):
     def setUp(self):
         self.video = Video.objects.create(

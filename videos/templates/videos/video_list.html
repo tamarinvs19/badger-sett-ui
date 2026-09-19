@@ -1,6 +1,6 @@
 {% extends "videos/base.html" %}
 
-{% block title %}Videos · VideoShare{% endblock %}
+{% block title %}Videos · Badger Sett{% endblock %}
 
 {% block content %}
   <h1 class="page-title">All videos</h1>
@@ -27,9 +27,6 @@
       {% endfor %}
     </div>
   {% else %}
-    <p class="empty">
-      No videos yet. Add the first one from the
-      <a href="{% url 'admin:videos_video_add' %}">admin panel</a>.
-    </p>
+    <p class="empty">No videos yet.</p>
   {% endif %}
 {% endblock %}

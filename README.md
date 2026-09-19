@@ -1,4 +1,4 @@
-# VideoShare — minimal video sharing site (Django + Yandex Cloud Video)
+# Badger Sett — minimal video sharing site (Django + Yandex Cloud Video)
 
 A tiny web service to share a catalog of videos. Videos live in
 [Yandex Cloud Video](https://cloud.yandex.com/services/video); this app only

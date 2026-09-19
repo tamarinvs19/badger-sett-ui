@@ -1,0 +1,38 @@
+{% extends "videos/base.html" %}
+
+{% block title %}{{ video.name }} · VideoShare{% endblock %}
+
+{% block content %}
+  <nav class="breadcrumb">
+    <a href="{% url 'videos:list' %}">&#8592; All videos</a>
+  </nav>
+
+  <article class="video-page">
+    <div class="player">
+      {% if video.is_direct_file %}
+        <video controls preload="metadata"
+               poster="{% if video.wallpaper %}{{ video.wallpaper.url }}{% endif %}"
+               src="{{ video.video_url }}"></video>
+      {% else %}
+        <iframe src="{{ video.video_url }}"
+                title="{{ video.name }}"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowfullscreen
+                referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      {% endif %}
+    </div>
+
+    <h1 class="video-title">{{ video.name }}</h1>
+    <p class="video-meta">Published {{ video.created_at|date:"F j, Y" }}</p>
+
+    {% if video.description %}
+      <div class="video-description">{{ video.description|linebreaksbr }}</div>
+    {% endif %}
+
+    <p class="video-source">
+      <a href="{{ video.video_url }}" target="_blank" rel="noopener noreferrer">
+        Open in Yandex Cloud Video &#8599;
+      </a>
+    </p>
+  </article>
+{% endblock %}

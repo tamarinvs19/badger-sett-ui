@@ -1,0 +1,30 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}VideoShare{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <header class="site-header">
+    <a class="site-brand" href="{% url 'videos:list' %}">
+      <span class="site-logo" aria-hidden="true">▶</span>
+      <span class="site-name">VideoShare</span>
+    </a>
+    {% if user.is_staff %}
+      <nav class="site-nav">
+        <a href="{% url 'admin:index' %}">Admin</a>
+      </nav>
+    {% endif %}
+  </header>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    Videos are hosted on Yandex Cloud Video &middot; Powered by Django &amp; WSGI
+  </footer>
+</body>
+</html>

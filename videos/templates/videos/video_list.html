@@ -1,0 +1,35 @@
+{% extends "videos/base.html" %}
+
+{% block title %}Videos · VideoShare{% endblock %}
+
+{% block content %}
+  <h1 class="page-title">All videos</h1>
+
+  {% if videos %}
+    <div class="video-grid">
+      {% for video in videos %}
+        <a class="video-card" href="{{ video.get_absolute_url }}">
+          <div class="video-thumb">
+            {% if video.wallpaper %}
+              <img src="{{ video.wallpaper.url }}" alt="{{ video.name }}" loading="lazy">
+            {% else %}
+              <span class="video-thumb-placeholder" aria-hidden="true">▶</span>
+            {% endif %}
+          </div>
+          <div class="video-card-body">
+            <h2 class="video-card-title">{{ video.name }}</h2>
+            <p class="video-card-meta">{{ video.created_at|date:"M j, Y" }}</p>
+            {% if video.description %}
+              <p class="video-card-description">{{ video.description|truncatewords:24 }}</p>
+            {% endif %}
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="empty">
+      No videos yet. Add the first one from the
+      <a href="{% url 'admin:videos_video_add' %}">admin panel</a>.
+    </p>
+  {% endif %}
+{% endblock %}

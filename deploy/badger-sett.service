@@ -1,0 +1,47 @@
+# systemd unit for the Badger Sett gunicorn (WSGI) service.
+#
+# Install (adjust the /srv/badger-sett paths to wherever the app lives):
+#   sudo cp deploy/badger-sett.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now badger-sett
+#
+# The service user (www-data) must be able to write the sqlite database and
+# the media/ uploads folder:
+#   sudo chown -R www-data:www-data /srv/badger-sett
+#
+# Logs go to the journal:  journalctl -u badger-sett -f
+# Health check:            curl http://127.0.0.1:8000/health/
+
+[Unit]
+Description=Badger Sett video sharing site (gunicorn/WSGI)
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+
+WorkingDirectory=/srv/badger-sett
+
+# Load DJANGO_SECRET_KEY, DJANGO_ALLOWED_HOSTS, ... from the app .env.
+# The "-" prefix makes the file optional (settings fall back to env vars).
+EnvironmentFile=-/srv/badger-sett/.env
+
+# --bind overrides the 0.0.0.0:8000 value in gunicorn.conf.py so the app
+# listens on localhost only; nginx in front exposes it to the world.
+ExecStart=/srv/badger-sett/.venv/bin/gunicorn -c /srv/badger-sett/gunicorn.conf.py --bind 127.0.0.1:8000
+
+Restart=on-failure
+RestartSec=5
+
+StandardOutput=journal
+StandardError=journal
+
+# Light sandboxing for a WSGI app. ProtectSystem=full keeps /usr, /boot and
+# /etc read-only; the app still writes db.sqlite3 and media under /srv.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target

@@ -124,6 +124,36 @@ Run gunicorn on `127.0.0.1:8000` for the socket that nginx proxies to
 (override with `-b`), and terminate TLS in nginx. Static files come from
 WhiteNoise; uploaded wallpapers under `/media/` are served by nginx.
 
+### Run as a systemd service
+
+The repo ships a ready-made systemd unit for gunicorn:
+[`deploy/badger-sett.service`](deploy/badger-sett.service). Assuming the app
+lives at `/srv/badger-sett`:
+
+```bash
+# 1. deploy the code to /srv/badger-sett and create the venv + .env there,
+#    then make sure the service user can write the database and uploads:
+sudo chown -R www-data:www-data /srv/badger-sett
+
+# 2. install the unit and start it
+sudo cp deploy/badger-sett.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now badger-sett
+
+# 3. verify
+systemctl status badger-sett
+journalctl -u badger-sett -f
+curl http://127.0.0.1:8000/health/
+```
+
+The unit runs gunicorn as `www-data`, loads the app `.env`, binds to
+`127.0.0.1:8000` (overriding `gunicorn.conf.py` — nginx proxies to it), and
+restarts on failure. Override paths or options with a drop-in:
+
+```bash
+sudo systemctl edit badger-sett
+```
+
 ## Tests
 
 ```bash
